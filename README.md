@@ -62,4 +62,62 @@ cmake -G Ninja ../llvm \
 cmake --build .
 cmake --build . --target check-mlir
 cmake -DCMAKE_INSTALL_PREFIX=$HOME/llvm-install . -P cmake_install.cmake
+ninja install
+```
+
+## For the test file
+```bash
+cd ..
+touch test.c test2.c
+export PATH="$HOME/llvm-install/bin:$PATH"
+```
+
+1. clang version
+```bash
+clang -o test test.c
+./test
+```
+
+2. LLVM version
+
+```bash
+clang -S -emit-llvm test2.c -o -
+```
+The result should like:
+```
+; ModuleID = 'test2.c'
+source_filename = "test2.c"
+target datalayout = "e-m:o-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-n32:64-S128-Fn32"
+target triple = "arm64-apple-macosx26.0.0"
+
+; Function Attrs: noinline nounwind optnone ssp uwtable(sync)
+define i32 @add(i32 noundef %a, i32 noundef %b) #0 {
+entry:
+  %a.addr = alloca i32, align 4
+  %b.addr = alloca i32, align 4
+  store i32 %a, ptr %a.addr, align 4
+  store i32 %b, ptr %b.addr, align 4
+  %0 = load i32, ptr %a.addr, align 4
+  %1 = load i32, ptr %b.addr, align 4
+  %add = add nsw i32 %0, %1
+  %add1 = add nsw i32 %add, 5
+  ret i32 %add1
+}
+
+attributes #0 = { noinline nounwind optnone ssp uwtable(sync) "frame-pointer"="non-leaf-no-reserve" "no-trapping-math"="true" "stack-protector-buffer-size"="8" "target-cpu"="apple-m1" "target-features"="+aes,+altnzcv,+ccdp,+ccidx,+ccpp,+complxnum,+crc,+dit,+dotprod,+flagm,+fp-armv8,+fp16fml,+fptoint,+fullfp16,+jsconv,+lse,+neon,+pauth,+perfmon,+predres,+ras,+rcpc,+rdm,+sb,+sha2,+sha3,+specrestrict,+ssbs,+v8.1a,+v8.2a,+v8.3a,+v8.4a,+v8a" }
+
+!llvm.module.flags = !{!0, !1, !2, !3}
+!llvm.ident = !{!4}
+
+!0 = !{i32 1, !"wchar_size", i32 4}
+!1 = !{i32 8, !"PIC Level", i32 2}
+!2 = !{i32 7, !"uwtable", i32 1}
+!3 = !{i32 7, !"frame-pointer", i32 4}
+!4 = !{!"clang version 22.0.0git (https://github.com/CheRongtian/llvm-project.git 10ea9ea0164e564da3427b42538300f2f855be55)"}
+```
+
+This can be verified:
+```bash
+which clang
+mlir-opt --version
 ```
