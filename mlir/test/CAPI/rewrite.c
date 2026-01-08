@@ -554,10 +554,10 @@ void testGreedyRewriteDriverConfig(MlirContext ctx) {
 
   // Test all configuration getters and verify values
   // CHECK: MaxIterations: 5
-  fprintf(stderr, "MaxIterations: %ld\n",
+  fprintf(stderr, "MaxIterations: %lld\n",
           mlirGreedyRewriteDriverConfigGetMaxIterations(config));
   // CHECK: MaxNumRewrites: 100
-  fprintf(stderr, "MaxNumRewrites: %ld\n",
+  fprintf(stderr, "MaxNumRewrites: %lld\n",
           mlirGreedyRewriteDriverConfigGetMaxNumRewrites(config));
   // CHECK: UseTopDownTraversal: 1
   fprintf(stderr, "UseTopDownTraversal: %d\n",

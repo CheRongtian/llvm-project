@@ -42,3 +42,24 @@ chat](https://discord.gg/xS7Z362),
 
 The LLVM project has adopted a [code of conduct](https://llvm.org/docs/CodeOfConduct.html) for
 participants to all modes of communication within the project.
+
+## What I have done
+
+```bash
+brew install cmake ccache ninja
+mkdir file_folder/build
+cd file_folder/build
+
+cmake -G Ninja ../llvm \
+   -DCMAKE_BUILD_TYPE=Release \
+   -DLLVM_ENABLE_ASSERTIONS=ON \
+   -DLLVM_ENABLE_PROJECTS="mlir;clang" \
+   -DLLVM_TARGETS_TO_BUILD="host" \
+   -DLLVM_ENABLE_LLD=OFF \
+   -DLLVM_CCACHE_BUILD=ON \
+   -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+cmake --build .
+cmake --build . --target check-mlir
+cmake -DCMAKE_INSTALL_PREFIX=$HOME/llvm-install . -P cmake_install.cmake
+```
